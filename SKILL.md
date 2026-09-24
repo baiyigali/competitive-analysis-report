@@ -14,11 +14,19 @@ description: 生成专业、可直接发布的竞品分析/品类竞品格局报
    - 涉及多竞品、多信源、多维度时，可委派 OrganizeAgent 并行调研再整合，不要凭印象写。
 3. **封面图**：内部先写 2 个专业长英文提示词（亚洲/中国人、电影质感、写实、画面无任何文字；提示词不进正文），再用图片生成工具真正生成一张横版封面（约 2.35:1，建议 width≈2048 height≈872）。
 4. **归档目录（开写前问一次）**：正式调研前，先问用户一次："报告和封面保存到哪个目录？"并给出默认建议 `~/articles/程序员白大力/竞品分析报告/`。用户给了路径就用用户的；用户说"默认/就按这个/不指定"，就用默认目录，不存在则创建。把 md 与封面 png 平铺存进该目录，命名 `竞品分析报告_NN_主题.md` 与同名 `.png`，`NN` 取目录现有最大序号 +1（不新建子目录）。封面生成返回的云上 URL 以 `![封面](URL)` 插到 md 标题正下方；png 也下载存一份在同级目录。
-5. **发布（仅当用户要求）**：用户说"发布/发公众号"时，用本机已安装的 `wechat-auto-publish` 命令推到草稿箱，**只跑一次**避免重复草稿：
+5. **发布（仅当用户要求）**：用户说"发布/发公众号"时，先在沙箱里自动装好发布依赖（不要去用户本地工作目录翻找）：
    ```bash
-   wechat-auto-publish draft "<md绝对路径>" "<封面png绝对路径>" "<文章标题>" "<120字内摘要>" --account <公众号名>
+   pip install -U wechat-auto-publish
    ```
-   若 `wechat-auto-publish` 不在 PATH，先 `which wechat-auto-publish` 找它；找不到就问用户安装路径。该命令只存草稿、不群发；群发需用户到公众号后台手动点。账号凭据在其 `config.json` 的 `accounts` 下，用 `--account` 指定。
+   若 PyPI 安装失败，改从 GitHub 源码安装：
+   ```bash
+   pip install git+https://github.com/baiyigali/wechat-auto-publish.git
+   ```
+   然后运行（**只跑一次**，避免重复建草稿）：
+   ```bash
+   wechat-auto-publish draft "<md绝对路径>" "<封面png绝对路径>" "<文章标题>" "<120字内摘要>" --account <公众号名> --config <config.json路径>
+   ```
+   账号凭据（appid/secret/author）放在 `config.json` 的 `accounts` 下，由用户在运行时提供或指向已有 config，本技能不内置凭据。该命令只存草稿、不群发；群发需用户到公众号后台手动点。
 
 ## 硬性规范（务必遵守）
 
